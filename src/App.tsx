@@ -1,20 +1,12 @@
-import { buttonVariants } from "./components/ui/button";
+import { ThemeProvider } from "./components/theme-provider";
+import Home from "./Home";
 
 function App() {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen space-y-20">
-      <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
-        Vite, React, Shadcn-ui minimal starter
-      </h1>
-      <a
-        href="https://github.com/moinulmoin/vite-react-tailwind-starter"
-        target="_blank"
-        rel="noreferrer"
-        className={buttonVariants()}
-      >
-        ⭐️ on GitHub
-      </a>
-    </main>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Home />
+    </ThemeProvider>
+
   );
 }
 
