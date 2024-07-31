@@ -31,22 +31,27 @@ export function ThemeProvider({
   )
  
   useEffect(() => {
-    const root = window.document.documentElement
- 
-    root.classList.remove("light", "dark")
- 
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light"
- 
-      root.classList.add(systemTheme)
-      return
-    }
- 
-    root.classList.add(theme)
-  }, [theme])
+    const root = document.documentElement;
+    const systemTheme = matchMedia('(prefers-color-scheme: dark)');
+
+    const updateTheme = () => {
+      root.classList.remove('light', 'dark');
+
+      if (theme === 'system') {
+        root.classList.add(systemTheme.matches ? 'dark' : 'light');
+        return;
+      }
+
+      root.classList.add(theme);
+    };
+
+    updateTheme();
+    systemTheme.addEventListener('change', updateTheme);
+
+    return () => {
+      systemTheme.removeEventListener('change', updateTheme);
+    };
+  }, [theme]);
  
   const value = {
     theme,

@@ -7,8 +7,8 @@ import { useViewStore, View } from "@/state/view";
 import Introduction from "@/components/intro";
 import Editor from "./components/editor";
 
-
 export default function Home() {
+  
   const fetchNotes = useNotesStore((lp) => lp.fetch);
 
   const notes = useNotesStore((lp) => lp.notes);
