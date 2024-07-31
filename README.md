@@ -2,7 +2,9 @@
 
 ## info
 
-- build by rust + tauri + nextjs + tailwindcss
+- build by rust + tauri + react + tailwindcss
+
+- 支持 Light Dark切换
 
 - intro
 
