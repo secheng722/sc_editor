@@ -2,14 +2,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use crate::command::note::{add_note, delete_note, get_note_data, get_notes, update_note};
-use core::db::init_db;
 
 pub mod command;
 pub mod core;
 
 #[tokio::main]
 async fn main() {
-    init_db().await;
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             get_note_data,

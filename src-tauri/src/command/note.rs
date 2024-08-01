@@ -1,4 +1,4 @@
-use crate::core::db::DB;
+use crate::core::db::{connect, DB};
 
 #[derive(serde::Serialize, sqlx::FromRow)]
 pub struct Note {
@@ -8,7 +8,7 @@ pub struct Note {
 
 #[tauri::command]
 pub async fn get_notes() -> Vec<Note> {
-    let db = DB.get().unwrap();
+    let db = DB.get_or_init(|| async { connect().await.unwrap() }).await;
     sqlx::query_as::<_, Note>("SELECT * FROM note")
         .fetch_all(db)
         .await
@@ -18,7 +18,7 @@ pub async fn get_notes() -> Vec<Note> {
 #[tauri::command]
 pub async fn add_note(title: String) -> Note {
     println!("add_note: title={}", title);
-    let db = DB.get().unwrap();
+    let db = DB.get_or_init(|| async { connect().await.unwrap() }).await;
     let note = sqlx::query_as::<_, Note>("INSERT INTO note (title) VALUES (?) RETURNING *")
         .bind(title)
         .fetch_one(db)
@@ -36,7 +36,7 @@ pub async fn add_note(title: String) -> Note {
 #[tauri::command]
 pub async fn get_note_data(id: i32) -> String {
     println!("get_note_data: id={}", id);
-    let db = DB.get().unwrap();
+    let db = DB.get_or_init(|| async { connect().await.unwrap() }).await;
     let note_data: Option<String> =
         sqlx::query_scalar("SELECT data FROM note_data WHERE noteId = ?")
             .bind(id)
@@ -55,7 +55,7 @@ pub async fn get_note_data(id: i32) -> String {
 #[tauri::command]
 pub async fn update_note(id: i32, data: String) {
     println!("update_note: id={}, data={}", id, data);
-    let db = DB.get().unwrap();
+    let db = DB.get_or_init(|| async { connect().await.unwrap() }).await;
     sqlx::query("UPDATE note_data SET data = ? WHERE noteId = ?")
         .bind(data)
         .bind(id)
@@ -67,7 +67,7 @@ pub async fn update_note(id: i32, data: String) {
 #[tauri::command]
 pub async fn delete_note(id: i32) {
     println!("delete_note: id={}", id);
-    let db = DB.get().unwrap();
+    let db = DB.get_or_init(|| async { connect().await.unwrap() }).await;
     sqlx::query("DELETE FROM note_data WHERE noteId = ?")
         .bind(id)
         .execute(db)
